@@ -69,7 +69,9 @@ class HashTable():
 
         Implement this.
         """
-
+        index = self.hash_index(key)
+        self.storage[key] = None
+        
     def get(self, key):
         """
         Retrieve the value stored with the given key.
