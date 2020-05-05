@@ -20,6 +20,8 @@ class HashTable():
     def __init__(self, capacity):
         self.storage = [None] * capacity
         self.capacity = capacity
+        self.head = None
+
     def fnv1(self, key):
         """
         FNV-1 64-bit hash function
@@ -57,9 +59,15 @@ class HashTable():
         Implement this.
         """
         index = self.hash_index(key)
-        if self.storage[index] != None:
+        node = HashTableEntry(key, value)
+        if self.storage[index] is None:
+            self.storage[index] = node
+        elif self.storage[index].next:
             print('collision')
-        self.storage[index] = key, value
+            cur = self.storage[index]
+            while cur is not None:
+                cur = cur.next
+            cur = node
 
     def delete(self, key):
         """
@@ -70,8 +78,21 @@ class HashTable():
         Implement this.
         """
         index = self.hash_index(key)
-        self.storage[key] = None
-        
+        cur = self.storage[index]
+        if cur is None:
+            return
+        else:
+            if cur.key ==  key:
+                cur = cur.next
+            else:
+                while cur is not None:
+                    if cur.key == key:
+                        cur = cur.next
+                        prev.next = cur
+                        return
+                    prev = cur
+                    cur = cur.next
+
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -81,7 +102,14 @@ class HashTable():
         Implement this.
         """
         index = self.hash_index(key)
-        return self.storage[index]
+
+        cur = self.storage[index]
+        while cur is not None:
+            if key == cur.key:
+                return cur.value
+            cur = cur.next
+        return None
+
     def resize(self):
         """
         Doubles the capacity of the hash table and
