@@ -122,6 +122,18 @@ class HashTable():
 
         Implement this.
         """
+        if (len(self.storage) / self.size) > 0.7:
+            #create a temp hash at double the size
+            self.capacity *= 2
+            t = [None] * self.capacity
+
+
+        elif (len(self.storage) / self.size) < 0.2:
+            self.capacity /= 2
+            if self.capacity < 8:
+                self.capacity = 8
+            t = [None] * self.capacity
+
 
 if __name__ == "__main__":
     ht = HashTable(2)
