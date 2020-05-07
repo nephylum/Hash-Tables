@@ -17,7 +17,7 @@ class HashTable():
     Implement this.
     """
 
-    def __init__(self, capacity):
+    def __init__(self, capacity = 8):
         self.storage = [None] * capacity
         self.capacity = capacity
         self.head = None
@@ -126,13 +126,21 @@ class HashTable():
             #create a temp hash at double the size
             self.capacity *= 2
             t = [None] * self.capacity
-
-
         elif (len(self.storage) / self.size) < 0.2:
             self.capacity /= 2
             if self.capacity < 8:
                 self.capacity = 8
             t = [None] * self.capacity
+        else:
+            return
+
+        for x in range(len(self.storage)):
+            cur = self.storage[x]
+            y = cur.next
+            while y is not None:
+                index = self.hash_index(self.storage[x].key)
+                t[index].key, t[index].value, t[index].next = y.key, y.value, y.next
+                y = y.next
 
 
 if __name__ == "__main__":
