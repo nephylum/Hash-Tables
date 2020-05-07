@@ -21,6 +21,7 @@ class HashTable():
         self.storage = [None] * capacity
         self.capacity = capacity
         self.head = None
+        self.size = 0
 
     def fnv1(self, key):
         """
@@ -38,7 +39,7 @@ class HashTable():
         #first implementation from c code:
         hash = 5381
         for x in key:
-            hash = (hash << 5) + ord(x)
+            hash = ((hash << 5) + hash) + ord(x)
             hash &= 0xffffffff
         return hash
 
@@ -62,12 +63,14 @@ class HashTable():
         node = HashTableEntry(key, value)
         if self.storage[index] is None:
             self.storage[index] = node
+            self.size += 1
         elif self.storage[index].next:
             print('collision')
             cur = self.storage[index]
             while cur is not None:
                 cur = cur.next
             cur = node
+            self.size += 1
 
     def delete(self, key):
         """
@@ -84,11 +87,13 @@ class HashTable():
         else:
             if cur.key ==  key:
                 cur = cur.next
+                self.size -= 1
             else:
                 while cur is not None:
                     if cur.key == key:
                         cur = cur.next
                         prev.next = cur
+                        self.size -= 1
                         return
                     prev = cur
                     cur = cur.next
