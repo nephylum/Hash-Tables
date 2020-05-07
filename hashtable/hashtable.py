@@ -64,11 +64,13 @@ class HashTable():
         if self.storage[index] is None:
             self.storage[index] = node
             self.size += 1
+            self.resize()
         elif self.storage[index].next:
             print('collision')
             cur = self.storage[index]
             while cur is not None:
                 cur = cur.next
+                self.resize()
             cur = node
             self.size += 1
 
@@ -88,12 +90,14 @@ class HashTable():
             if cur.key ==  key:
                 cur = cur.next
                 self.size -= 1
+                self.resize()
             else:
                 while cur is not None:
                     if cur.key == key:
                         cur = cur.next
                         prev.next = cur
                         self.size -= 1
+                        self.resize()
                         return
                     prev = cur
                     cur = cur.next

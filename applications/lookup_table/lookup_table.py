@@ -1,13 +1,18 @@
 import math
 import random
-
+#create cash for faster lookup
+cache = {}
 def slowfun(x, y):
     # TODO: Modify to produce the same results, but much faster
+    if (x,y) in cache:
+        return cache[x,y]
+
     v = math.pow(x, y)
     v = math.factorial(v)
     v //= (x + y)
     v %= 982451653
-
+    #add new value to cache
+    cache[x,y] = v
     return v
 
 
