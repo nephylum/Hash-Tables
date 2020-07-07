@@ -36,11 +36,11 @@ class HashTable():
 
         Implement this, and/or FNV-1.
         """
-        #first implementation from c code:
+
         hash = 5381
         for x in key:
             hash = ((hash << 5) + hash) + ord(x)
-            hash &= 0xffffffff
+            hash &= 0xFFFFFFFF
         return hash
 
     def hash_index(self, key):
@@ -61,6 +61,8 @@ class HashTable():
         """
         index = self.hash_index(key)
         node = HashTableEntry(key, value)
+        print("[put] index:", index)
+        print("[put] capacity", self.capacity, "length", len(self.storage))
         if self.storage[index] is None:
             self.storage[index] = node
             self.size += 1
@@ -126,26 +128,33 @@ class HashTable():
 
         Implement this.
         """
+        print("[size] self.size", self.size)
         if (len(self.storage) / self.size) > 0.7:
             #create a temp hash at double the size
+            print("[resize] self.capacity", self.capacity)
             self.capacity *= 2
+            print("[resize] self.capacity", self.capacity)
             t = [None] * self.capacity
+            print('length of t', len(t))
         elif (len(self.storage) / self.size) < 0.2:
             self.capacity /= 2
-            if self.capacity < 8:
-                self.capacity = 8
+            print("[resize] self.size", self.size)
+            # if self.capacity < 8:
+            #     self.capacity = 8
             t = [None] * self.capacity
         else:
-            return
+            return None
 
         for x in range(len(self.storage)):
             cur = self.storage[x]
-            y = cur.next
-            while y is not None:
-                index = self.hash_index(self.storage[x].key)
-                t[index].key, t[index].value, t[index].next = y.key, y.value, y.next
-                y = y.next
-
+        
+            if cur is not None:
+                y = cur.next
+                while y is not None:
+                    index = self.hash_index(self.storage[x].key)
+                    t[index].key, t[index].value, t[index].next = y.key, y.value, y.next
+                    y = y.next
+        self.storage = t
 
 if __name__ == "__main__":
     ht = HashTable(2)
