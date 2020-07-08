@@ -59,21 +59,25 @@ class HashTable():
 
         Implement this.
         """
+        #hash key for indexing
         index = self.hash_index(key)
+
+        #make key, value a node
         node = HashTableEntry(key, value)
-        #print("[put] index:", index)
-        #print("[put] capacity", self.capacity, "length", len(self.storage))
+
         if self.storage[index] is None:
-        #    print("Node", node.key, node.value)
+            #if nothing in index add node
             self.storage[index] = node
-    #        print("is it in?", self.storage[index].key, self.storage[index].value)
+            #update size attribute for resize comparison resize
             self.size += 1
+            #run resize function to check if table needs resizing
             self.resize()
         elif self.storage[index].next:
-    #        print('collision')
+            #if a value exists at index, go through sll and add at end
             cur = self.storage[index]
             while cur is not None:
                 cur = cur.next
+                #after adding, check if resize is necessary
                 self.resize()
             cur = node
             self.size += 1
@@ -114,17 +118,17 @@ class HashTable():
 
         Implement this.
         """
+        #find hash for key
         index = self.hash_index(key)
-        #print("get index:", index)
+
         cur = self.storage[index]
-        #print("storage value:", cur)
-        #print(self.storage)
+
         while cur is not None:
             if key == cur.key:
-                #print('fo real')
+                #found the value, so return it
                 return cur.value
             cur = cur.next
-        return "uh-oh"
+        return None
 
     def resize(self):
         """
@@ -133,30 +137,19 @@ class HashTable():
 
         Implement this.
         """
-        #print("[size] self.size", self.size, "capacity", self.capacity)
+        #if hashtable is over 70% capacity, double it
         if (self.size / self.capacity ) > 0.7:
             #create a temp hash at double the size
-            #print("[resize] self.capacity", self.capacity)
             self.capacity *= 2
-            #print("[resize] self.capacity", self.capacity)
+            #create a temporary hashtable for copying
             t = [None] * self.capacity
-            #print('length of t', len(t))
+        #if hashtable is under 20% capacity, halve it
         elif (self.size / self.capacity) < 0.2:
             self.capacity /= 2
-            #print("[resize] self.size", self.size)
-            # if self.capacity < 8:
-            #     self.capacity = 8
+            #create temporary hashtable for copying
             t = [None] * self.capacity
         else:
             return None
-
-        # print("\ntest")
-        # for x in range(len(self.storage)):
-        #     if self.storage[x] is not None:
-        #         print(self.storage[x].key, self.storage[x].value)
-        #         if self.storage[x].next:
-        #             print(self.storage[x].next)
-        # print("Endtest\n")
 
         for x in range(len(self.storage)):
             cur = self.storage[x]
@@ -165,10 +158,7 @@ class HashTable():
 
                 y = cur.next
                 while y is not None:
-                    print("I'm in")
                     index = self.hash_index(self.storage[x].key)
-                    # print('index here:', index)
-                    # print('value to add:', y.key, y.value, y.next)
                     node = HashTableEntry(y.key, y.value)
                     t[index] = node
                     if y.next:
@@ -176,12 +166,9 @@ class HashTable():
                     y = y.next
                 if y is None:
                     index = self.hash_index(cur.key)
-                    # print('index here:', index)
-                    # print('value to add:', cur.key, cur.value)
                     node = HashTableEntry(cur.key, cur.value)
                     t[index] = node
 
-        # print("what's up?", t)
         self.storage = t
 
 if __name__ == "__main__":
