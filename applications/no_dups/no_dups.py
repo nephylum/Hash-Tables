@@ -1,6 +1,16 @@
 def no_dups(s):
     # Implement me.
-
+    cache = {}
+    listowords = s.split()
+    str_out = ""
+    for word in listowords:
+        if word not in cache:
+            if len(str_out)==0:
+                str_out += word
+            else:
+                str_out += " " + word
+            cache[word] = 1
+    return str_out
 
 if __name__ == "__main__":
     print(no_dups(""))
