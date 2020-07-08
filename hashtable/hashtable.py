@@ -40,8 +40,8 @@ class HashTable():
         hash = 5381
         for x in key:
             hash = ((hash << 5) + hash) + ord(x)
-            hash &= 0xFFFFFFFF
-        return hash
+            #hash &= 0xFFFFFFFF
+        return hash + 0xFFFFFFFF
 
     def hash_index(self, key):
         """
@@ -61,14 +61,16 @@ class HashTable():
         """
         index = self.hash_index(key)
         node = HashTableEntry(key, value)
-        print("[put] index:", index)
-        print("[put] capacity", self.capacity, "length", len(self.storage))
+        #print("[put] index:", index)
+        #print("[put] capacity", self.capacity, "length", len(self.storage))
         if self.storage[index] is None:
+        #    print("Node", node.key, node.value)
             self.storage[index] = node
+    #        print("is it in?", self.storage[index].key, self.storage[index].value)
             self.size += 1
             self.resize()
         elif self.storage[index].next:
-            print('collision')
+    #        print('collision')
             cur = self.storage[index]
             while cur is not None:
                 cur = cur.next
@@ -113,13 +115,16 @@ class HashTable():
         Implement this.
         """
         index = self.hash_index(key)
-
+        #print("get index:", index)
         cur = self.storage[index]
+        #print("storage value:", cur)
+        #print(self.storage)
         while cur is not None:
             if key == cur.key:
+                #print('fo real')
                 return cur.value
             cur = cur.next
-        return None
+        return "uh-oh"
 
     def resize(self):
         """
@@ -128,32 +133,55 @@ class HashTable():
 
         Implement this.
         """
-        print("[size] self.size", self.size)
-        if (len(self.storage) / self.size) > 0.7:
+        #print("[size] self.size", self.size, "capacity", self.capacity)
+        if (self.size / self.capacity ) > 0.7:
             #create a temp hash at double the size
-            print("[resize] self.capacity", self.capacity)
+            #print("[resize] self.capacity", self.capacity)
             self.capacity *= 2
-            print("[resize] self.capacity", self.capacity)
+            #print("[resize] self.capacity", self.capacity)
             t = [None] * self.capacity
-            print('length of t', len(t))
-        elif (len(self.storage) / self.size) < 0.2:
+            #print('length of t', len(t))
+        elif (self.size / self.capacity) < 0.2:
             self.capacity /= 2
-            print("[resize] self.size", self.size)
+            #print("[resize] self.size", self.size)
             # if self.capacity < 8:
             #     self.capacity = 8
             t = [None] * self.capacity
         else:
             return None
 
+        # print("\ntest")
+        # for x in range(len(self.storage)):
+        #     if self.storage[x] is not None:
+        #         print(self.storage[x].key, self.storage[x].value)
+        #         if self.storage[x].next:
+        #             print(self.storage[x].next)
+        # print("Endtest\n")
+
         for x in range(len(self.storage)):
             cur = self.storage[x]
-        
+
             if cur is not None:
+
                 y = cur.next
                 while y is not None:
+                    print("I'm in")
                     index = self.hash_index(self.storage[x].key)
-                    t[index].key, t[index].value, t[index].next = y.key, y.value, y.next
+                    # print('index here:', index)
+                    # print('value to add:', y.key, y.value, y.next)
+                    node = HashTableEntry(y.key, y.value)
+                    t[index] = node
+                    if y.next:
+                        t[index].next = y.next
                     y = y.next
+                if y is None:
+                    index = self.hash_index(cur.key)
+                    # print('index here:', index)
+                    # print('value to add:', cur.key, cur.value)
+                    node = HashTableEntry(cur.key, cur.value)
+                    t[index] = node
+
+        # print("what's up?", t)
         self.storage = t
 
 if __name__ == "__main__":
